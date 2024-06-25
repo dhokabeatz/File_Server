@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="login">
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+
+        <a href="{% url 'landing_page' %}">Home</a>
+        <a href="{% url 'signUp' %}">Register</a>
+        <h1>Login</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <br><br>
+            <a href="{% url 'reset_password' %}">Forgot Password</a>
+            <br>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>
