@@ -1,6 +1,6 @@
 from django import forms  
 from django.contrib.auth.models import User  
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm 
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm 
 from django.core.exceptions import ValidationError  
 from django.forms.fields import EmailField  
 from django.forms.forms import Form  
@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate
 #User Registration Form
 class CustomUserCreationForm(UserCreationForm):  
     username = forms.CharField(label='username', min_length=5, max_length=150)  
-    email = forms.EmailField(label='email')  
+    email = forms.EmailField(label='email',)  
     password1 = forms.CharField(label='password', widget=forms.PasswordInput)  
     password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)  
 
@@ -45,6 +45,7 @@ class CustomUserCreationForm(UserCreationForm):
         )  
         return user  
 
+#Login Form
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -66,3 +67,29 @@ class CustomAuthenticationForm(AuthenticationForm):
                 raise ValidationError("This account is inactive.")
 
         return self.cleaned_data
+
+
+#Passowrd Reset Form - Send email for link
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        max_length=254,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'})
+    )
+
+
+#Password Reset Form- For new password 
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="New password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}),
+    )
+    new_password2 = forms.CharField(
+        label="Confirm new password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}),
+    )
+
+
+class EmailForm(forms.Form):
+    recipient = forms.EmailField(label='Recipient')
+    subject = forms.CharField(max_length=100, label='Subject')
+    message = forms.CharField(widget=forms.Textarea, label='Message')

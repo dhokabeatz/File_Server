@@ -1,11 +1,67 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
+from django.http import HttpResponse
 from django import forms
 from django.contrib.auth import forms  
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, EmailForm
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from .models import Document
+from django.core.mail import send_mail
+from django.conf import settings
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+import json
+from io import BytesIO
+import os
+import zipfile
+
+
+
+
+def email_form_view(request, document_id):
+    document = Document.objects.get(pk=document_id)
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            recipient = form.cleaned_data['recipient']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            file_url = request.build_absolute_uri(document.file.url)
+
+            # Construct the email content
+            email_message = f"{message}\n\nYou can download the file here: {file_url}"
+
+            # Send email
+            send_mail(subject, email_message, settings.DEFAULT_FROM_EMAIL, [recipient])
+
+            return redirect('userDashboard')  # Redirect to a success page
+    else:
+        form = EmailForm()
+    return render(request, 'email_form.html', {'form': form, 'document': document})
+
+
+#Multiple selection view
+@csrf_exempt
+def download_multiple_files(request):
+    if request.method == 'POST':
+        file_ids = request.POST.get('file_ids')
+        file_ids = json.loads(file_ids)
+
+        buffer = BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as zip_file:
+            for file_id in file_ids:
+                document = get_object_or_404(Document, pk=file_id)
+                file_path = document.file.path
+                zip_file.write(file_path, os.path.basename(file_path))
+
+        buffer.seek(0)
+
+        response = HttpResponse(buffer, content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename=files.zip'
+        return response
+
+    return HttpResponse(status=405)
 
 def logout(request):
     auth.logout(request)
@@ -22,7 +78,7 @@ def login(request):
             user = form.get_user()
             
             auth.login(request, user)
-            return redirect('userDashboard')  # Redirect to a success page.
+            return redirect('userDashboard')
         else:
             messages.error(request, 'Invalid email or password.')
     else:
@@ -53,33 +109,19 @@ def signUp(request):
 
 
 
-#User views
-
-
-# @login_required(login_url='login')
-# def userDashboard(request):
-#     documents = Document.objects.all()
-#     context = {'documents': documents}
-#     return render(request, 'userdashboard_page.html',context)
-
 @login_required(login_url='login')
 def userDashboard(request):
-    documents = Document.objects.all()
+    query = request.GET.get('q')
+    if query:
+        documents = Document.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+    else:
+        documents = Document.objects.all()
     print(documents)
     return render(request, 'userdashboard_page.html', {'documents': documents})
 
-# # views.py
-# from django.shortcuts import render
-# from .models import Document
 
-# def dashboard(request):
-#     documents = Document.objects.all()
-#     return render(request, 'dashboard.html', {'documents': documents})
-
-
-
-
-#Landing and authentication views
 def landing_page(request):
     
     return render(request, "landing_page.html")

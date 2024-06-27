@@ -1,9 +1,12 @@
 from django.urls import path
-from .views import landing_page,login,signUp, userDashboard,logout
+from .views import landing_page,login,signUp, userDashboard,logout, email_form_view,download_multiple_files
 from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     #Authentication patterns
+    path('download-multiple/', download_multiple_files, name='download_multiple'),
+    path('email/<int:document_id>/', email_form_view, name='email_form'),
     path("",landing_page, name="landing_page"),
     path("login/",login,name="login"),
     path("signup/",signUp,name="signUp"),
@@ -12,8 +15,7 @@ urlpatterns = [
     path("reset/<uidb64>/<token>", auth_views.PasswordResetConfirmView.as_view(template_name= "password_reset_form.html"), name ='password_reset_confirm'),
     path("reset_password_complete", auth_views.PasswordResetCompleteView.as_view(template_name= "password_reset_done.html"), name ='password_reset_complete'),
     path("logout",logout,name="logout"),
-
-
+   
     path("user-dashboard/",userDashboard,name="userDashboard"),
     # path("user-open",userOpen,name="userOpen"),
     # path("user-download",download,name="download"),

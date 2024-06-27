@@ -1,245 +1,200 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard</title>
+    <meta charset="UTF-8">
+    <title>File Dashboard</title>
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-  <!-- Embedded CSS -->
-  <style>
-    /* Basic styling for the dashboard */
-    .dashboard {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
-    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
 
-    .file-card {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-    }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    .file-info {
-        flex-grow: 1;
-        margin-left: 10px;
-    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    .file-actions {
-        display: flex;
-        gap: 10px;
-    }
+        /* Button styles */
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+        }
 
-    .btn {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-    }
-
-    .open-btn {
-        background-color: #4CAF50;
-        color: white;
-    }
-
-    .download-btn, .modal-download-btn {
-        background-color: #008CBA;
-        color: white;
-    }
-
-    .email-btn, .modal-email-btn {
-        background-color: #f44336;
-        color: white;
-    }
-
-    .file-date {
-        font-size: 0.9em;
-        color: #666;
-    }
-
-    /* Modal styling */
-    .modal {
-        display: none;  /* Hidden by default */
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 5px;
-        position: relative;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-  </style>
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="dashboard">
-    {% for document in documents %}
-    <div class="file-card">
-      <input type="checkbox" class="select-file" data-file-id="{{ document.id }}">
-      <div class="file-info">
-        <h3 class="file-title">{{ document.title }}</h3>
-        <p class="file-description">{{ document.description }}</p>
-      </div>
-      <div class="file-actions">
-        <button class="btn open-btn" data-title="{{ document.title }}"
-          data-description="{{ document.description }}" data-file-url="{{ document.file.url }}">Open</button>
-        <a href="{{ document.file.url }}" class="btn download-btn" download>Download</a>
-        <button class="btn email-btn" data-title="{{ document.title }}" data-file-url="{{ document.file.url }}" data-file-id="{{ document.id }}">Email</button>
-      </div>
+    <form method="get" action="{% url 'userDashboard' %}">
+        <input type="text" name="q" placeholder="Search files..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
+    <button id="download-selected" class="btn">Download Selected</button>
+
+    <div class="dashboard">
+        {% for document in documents %}
+        <div class="file-card">
+            <input type="checkbox" class="select-file" data-file-id="{{ document.id }}">
+            <div class="file-info">
+                <h3 class="file-title">{{ document.title }}</h3>
+                <p class="file-description">{{ document.description }}</p>
+            </div>
+            <div class="file-actions">
+                <button class="btn open-btn" data-title="{{ document.title }}"
+                    data-description="{{ document.description }}" data-file-url="{{ document.file.url }}">Open</button>
+                <a href="{{ document.file.url }}" class="btn download-btn" download>Download</a>
+                <button class="btn email-btn" data-title="{{ document.title }}" data-file-url="{{ document.file.url }}"
+                    data-file-id="{{ document.id }}">Email</button>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 
-  <!-- File Modal -->
-  <div id="fileModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="modalTitle">File Title</h2>
-      <p id="modalDescription">File description...</p>
-      <a id="modalDownloadLink" class="btn modal-download-btn" download>Download</a>
-      <button class="btn modal-email-btn">Email</button>
+    <!-- Modal Structure -->
+    <div id="fileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-description"></p>
+            <a id="modal-download" href="" class="btn" download>Download</a>
+            <button id="modal-email" class="btn">Email</button>
+        </div>
     </div>
-  </div>
 
-  <!-- Email Modal -->
-  <div id="emailModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Email File</h2>
-      <form id="emailForm">
-        <label for="recipientEmail">To:</label>
-        <input type="email" id="recipientEmail" name="recipient" required>
-        <label for="emailSubject">Subject:</label>
-        <input type="text" id="emailSubject" name="subject" required>
-        <input type="hidden" id="documentId" name="document_id">
-        <input type="hidden" id="fileUrl" name="file_url">
-        <button type="submit" class="btn">Send Email</button>
-      </form>
-    </div>
-  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const modal = document.getElementById("fileModal");
+            const modalTitle = document.getElementById("modal-title");
+            const modalDescription = document.getElementById("modal-description");
+            const modalDownload = document.getElementById("modal-download");
+            const modalEmail = document.getElementById("modal-email");
+            const span = document.getElementsByClassName("close")[0];
 
-  <!-- Embedded JavaScript -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const fileModal = document.getElementById('fileModal');
-        const emailModal = document.getElementById('emailModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDescription = document.getElementById('modalDescription');
-        const modalDownloadLink = document.getElementById('modalDownloadLink');
-        const closeModalButtons = document.querySelectorAll('.close');
-        const emailForm = document.getElementById('emailForm');
-        const recipientEmail = document.getElementById('recipientEmail');
-        const emailSubject = document.getElementById('emailSubject');
-        const documentId = document.getElementById('documentId');
-        const fileUrl = document.getElementById('fileUrl');
+            // Open button click event
+            document.querySelectorAll('.open-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const title = this.getAttribute('data-title');
+                    const description = this.getAttribute('data-description');
+                    const fileUrl = this.getAttribute('data-file-url');
 
-        // Add event listener to open buttons
-        document.querySelectorAll('.open-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const title = button.getAttribute('data-title');
-                const description = button.getAttribute('data-description');
-                const fileUrl = button.getAttribute('data-file-url');
+                    modalTitle.textContent = title;
+                    modalDescription.textContent = description;
+                    modalDownload.href = fileUrl;
+                    modalEmail.setAttribute('data-file-url', fileUrl);
 
-                modalTitle.textContent = title;
-                modalDescription.textContent = description;
-                modalDownloadLink.setAttribute('href', fileUrl);
-
-                fileModal.style.display = 'block';
+                    modal.style.display = "block";
+                });
             });
-        });
 
-        // Add event listener to email buttons
-        document.querySelectorAll('.email-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const fileId = button.getAttribute('data-file-id');
-                const fileUrlValue = button.getAttribute('data-file-url');
-                const fileTitle = button.getAttribute('data-title');
-
-                emailSubject.value = `File: ${fileTitle}`;
-                documentId.value = fileId;
-                fileUrl.value = fileUrlValue;
-
-                emailModal.style.display = 'block';
-            });
-        });
-
-        // Close the modals
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                button.closest('.modal').style.display = 'none';
-            });
-        });
-
-        // Close modal when clicking outside of the modal content
-        window.addEventListener('click', (event) => {
-            if (event.target === fileModal) {
-                fileModal.style.display = 'none';
+            // Close button event
+            span.onclick = function () {
+                modal.style.display = "none";
             }
-            if (event.target === emailModal) {
-                emailModal.style.display = 'none';
-            }
-        });
 
-        // Handle email form submission
-        emailForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const formData = new FormData(emailForm);
-
-            fetch('/send_email/', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Email sent successfully');
-                    emailModal.style.display = 'none';
-                } else {
-                    alert('Error sending email');
+            // Click outside of modal to close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error sending email');
+            }
+
+            // Email button click event
+            document.querySelectorAll('.email-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const fileId = this.getAttribute('data-file-id');
+                    window.location.href = `/email/${fileId}/`;  // Adjust the URL as needed
+                });
             });
         });
-    });
-  </script>
+
+        //Javascript for multiple downloads
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const downloadButton = document.getElementById('download-selected');
+
+            downloadButton.addEventListener('click', function () {
+                const selectedFiles = document.querySelectorAll('.select-file:checked');
+                const fileIds = Array.from(selectedFiles).map(cb => cb.getAttribute('data-file-id'));
+
+                if (fileIds.length > 0) {
+                    const formData = new FormData();
+                    formData.append('file_ids', JSON.stringify(fileIds));
+
+                    fetch('/download-multiple/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        }
+                    })
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'files.zip';
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                        })
+                        .catch(error => console.error('Error:', error));
+                } else {
+                    alert('Please select at least one file to download.');
+                }
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+
+
+
+    </script>
 </body>
 
 </html>
