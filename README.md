@@ -1,4 +1,4 @@
-# File Server Project
+# File Server
 
 ## Description
 File Server is a web application designed to facilitate the distribution and management of documents digitally. It allows businesses to upload documents such as wedding cards, admission forms, and more, which users can then access remotely.
