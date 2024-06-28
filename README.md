@@ -30,7 +30,7 @@ To get started with this project, follow these steps:
 2. Access the application at  'http://localhost:8000/'.
 
 ##Features
-User authentication and authorization
-File uploading and management
-Searching and filtering documents
-Email integration for sharing files
+* User authentication and authorization
+* File uploading and management
+* Searching and filtering documents
+* Email integration for sharing files
