@@ -23,13 +23,13 @@ To get started with this project, follow these steps:
 4. Apply databse migrations
    ```bash
    python manage.py migrate
-##Usage
+## Usage
 1. Start the server
    ```bash
    python manage.py runserver
 2. Access the application at  'http://localhost:8000/'.
 
-##Features
+## Features
 * User authentication and authorization
 * File uploading and management
 * Searching and filtering documents
