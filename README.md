@@ -1,7 +1,7 @@
 # File Server Project
-File Server is a web application designed to facilitate the distribution and management of documents digitally. It allows businesses to upload documents such as wedding cards, admission forms, and more, which users can then access remotely.
 
 ## Description
+File Server is a web application designed to facilitate the distribution and management of documents digitally. It allows businesses to upload documents such as wedding cards, admission forms, and more, which users can then access remotely.
 A digital platform for easy document access and download. This platform will streamline the process of distributing documents to various users. This project is a web-based file server built with Django, allowing users to upload, manage, search, and share documents.
 
 ## Table of Contents
