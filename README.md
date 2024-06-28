@@ -17,7 +17,8 @@ To get started with this project, follow these steps:
    git clone <repository-url>
    cd file-server-project
 2. Install dependencies:
-   '''
+   ```bash
    pip install -r requirements.txt
 4. Apply databse migrations
-   '''python manage.py migrate
+   ```bash
+   python manage.py migrate
