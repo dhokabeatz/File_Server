@@ -7,6 +7,7 @@ This project is a web-based file server built with Django, allowing users to upl
 ## Table of Contents
 
 - [Installation](#installation)
+- [Usage](#Usage)
 
 ## Installation
 
@@ -22,3 +23,14 @@ To get started with this project, follow these steps:
 4. Apply databse migrations
    ```bash
    python manage.py migrate
+##Usage
+1. Start the server
+   ```bash
+   python manage.py runserver
+2. Access the application at  'http://localhost:8000/'.
+
+##Features
+User authentication and authorization
+File uploading and management
+Searching and filtering documents
+Email integration for sharing files
