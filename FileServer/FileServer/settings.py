@@ -58,6 +58,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "FileServer.urls"
 
+AUTH_USER_MODEL = 'backend.CustomUser'
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login as auth_login
 from django import forms
 from django.contrib.auth import forms  
 from django.contrib import messages
@@ -18,13 +19,29 @@ import zipfile
 
 
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def admin_dashboard(request):
     if not request.user.is_superuser:
         return redirect('userDashboard')  # Redirect non-admins to user dashboard or handle as needed
 
     documents = Document.objects.all()  # Retrieve all documents
     return render(request, 'adminDashboard.html', {'documents': documents})
+
+
+
+# @login_required(login_url='login')
+def add_file(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.uploaded_by = request.user
+            document.save()
+            return redirect('admin_dashboard')
+    else:
+        form = DocumentForm()
+    return render(request, 'add_file.html', {'form': form})
+
 
 # backend/views.py
 
@@ -101,17 +118,16 @@ def logout(request):
 
     return redirect('landing_page')
 
-
 def login(request):
-
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
-        
         if form.is_valid():
             user = form.get_user()
-            
-            auth.login(request, user)
-            return redirect('userDashboard')
+            auth_login(request, user)
+            if user.is_superuser:
+                return redirect('admin_dashboard')
+            else:
+                return redirect('userDashboard')
         else:
             messages.error(request, 'Invalid email or password.')
     else:
@@ -121,7 +137,7 @@ def login(request):
         'form': form
     }
 
-    return render(request, 'login_page.html',context)
+    return render(request, 'login_page.html', context)
 
 def signUp(request):
 
