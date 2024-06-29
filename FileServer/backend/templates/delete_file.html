@@ -1,0 +1,17 @@
+<!-- delete_file.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete File</title>
+</head>
+<body>
+    <h2>Are you sure you want to delete this file?</h2>
+    <p>Title: {{ document.title }}</p>
+    <p>Description: {{ document.description }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+    </form>
+</body>
+</html>

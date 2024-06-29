@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django import forms
 from django.contrib.auth import forms  
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, EmailForm
+from .forms import DocumentForm, CustomUserCreationForm, CustomAuthenticationForm, EmailForm
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from .models import Document
@@ -15,6 +15,39 @@ import json
 from io import BytesIO
 import os
 import zipfile
+
+
+
+@login_required(login_url='login')
+def admin_dashboard(request):
+    if not request.user.is_superuser:
+        return redirect('userDashboard')  # Redirect non-admins to user dashboard or handle as needed
+
+    documents = Document.objects.all()  # Retrieve all documents
+    return render(request, 'adminDashboard.html', {'documents': documents})
+
+# backend/views.py
+
+def delete_file(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    if request.method == 'POST':
+        document.delete()
+        return redirect('admin_dashboard')  # Redirect to admin dashboard after deletion
+    return render(request, 'delete_file.html', {'document': document})
+
+def edit_file(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, instance=document)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_dashboard')  # Redirect to admin dashboard after editing
+    else:
+        form = DocumentForm(instance=document)
+    
+    return render(request, 'edit_file.html', {'form': form, 'document': document})
+
 
 
 

@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms.fields import EmailField  
 from django.forms.forms import Form  
 from django.contrib.auth import authenticate
+from .models import Document
 
 
 
@@ -93,3 +94,11 @@ class EmailForm(forms.Form):
     recipient = forms.EmailField(label='Recipient')
     subject = forms.CharField(max_length=100, label='Subject')
     message = forms.CharField(widget=forms.Textarea, label='Message')
+
+
+
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['title', 'description', 'file']
