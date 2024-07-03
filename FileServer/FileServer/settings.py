@@ -53,7 +53,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     
-    "backend.middleware.NoCacheMiddleware",
+    'backend.middleware.NoCacheMiddleware',    # "backend.middleware.DisableClientSideCachingMiddleware",
+
 ]
 
 ROOT_URLCONF = "FileServer.urls"

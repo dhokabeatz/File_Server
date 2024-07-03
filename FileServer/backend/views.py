@@ -23,7 +23,7 @@ import os
 import zipfile
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def admin_dashboard(request):
     if not request.user.is_superuser:
         return redirect(
@@ -34,7 +34,7 @@ def admin_dashboard(request):
     return render(request, "adminDashboard.html", {"documents": documents})
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def add_file(request):
     if request.method == "POST":
         form = DocumentForm(request.POST, request.FILES)
@@ -48,13 +48,11 @@ def add_file(request):
     return render(request, "add_file.html", {"form": form})
 
 
-
-
 def delete_file(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == "POST":
         document.delete()
-        return redirect("admin_dashboard") 
+        return redirect("admin_dashboard")
     return render(request, "delete_file.html", {"document": document})
 
 
@@ -65,9 +63,7 @@ def edit_file(request, document_id):
         form = DocumentForm(request.POST, instance=document)
         if form.is_valid():
             form.save()
-            return redirect(
-                "admin_dashboard"
-            )
+            return redirect("admin_dashboard")
     else:
         form = DocumentForm(instance=document)
 
