@@ -1,68 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Edit File</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
+{% block title %}File Server - Edit File{% endblock %}
+{% block content %}
 
-        .container {
-            background-color: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+<div class="container">
+    <h2 class="mb-4">Edit File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </div>
+        <div class="form-group">
+            <label for="id_file">File:</label>
+            {{ form.file }}
+            <small class="form-text text-muted">Leave blank if you do not want to change the file.</small>
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+<!-- Include Bootstrap JS at the end of the body -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        .btn-group {
-            margin-top: 20px;
-        }
-
-        .btn-cancel {
-            margin-left: 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <h2 class="mb-4">Edit File</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_title">Title:</label>
-                {{ form.title }}
-            </div>
-            <div class="form-group">
-                <label for="id_description">Description:</label>
-                {{ form.description }}
-            </div>
-            <div class="form-group">
-                <label for="id_file">File:</label>
-                {{ form.file }}
-                <small class="form-text text-muted">Leave blank if you do not want to change the file.</small>
-            </div>
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary btn-cancel">Cancel</a>
-            </div>
-        </form>
-    </div>
-
-    <!-- Include Bootstrap JS at the end of the body -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+{% endblock %}

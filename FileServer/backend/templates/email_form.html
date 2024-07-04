@@ -18,6 +18,9 @@
 </head>
 
 <body>
+    <a href="{% url 'userDashboard' %}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+    <a href="{% url 'logout' %}" class="btn btn-secondary mb-3">Logout</a>
+    <br>
     <h2>Email File: {{ document.title }}</h2>
     <form method="post">
         {% csrf_token %}
@@ -25,9 +28,7 @@
         <button type="submit" class="btn btn-primary">Send Email</button>
     </form>
 
-    <a href="{% url 'userDashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-    <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
-    <a href="{% url 'landing_page' %}" class="btn btn-secondary">Home</a>
+
 </body>
 
 </html>
