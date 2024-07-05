@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Link</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Account Activation</h1>
+            <p>Hi {{ user.username }},</p>
+            <p>Thank you for signing up for File Server. Please click the link below to activate your account:</p>
+            <p><a href="{{ activation_link }}">Activate Now</a></p>
+            <p>If the above link doesn't work, copy and paste the following URL into your browser:</p>
+            <p>{{ activation_link }}</p>
+            <p>Thank you!</p>
+        </div>
+        
+    </body>
+</html>

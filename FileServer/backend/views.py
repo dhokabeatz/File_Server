@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login
 from django import forms
+# from django.contrib.auth.models import User
+from .models import CustomUser
 from django.contrib.auth import forms
 from django.contrib import messages
 from .forms import (
@@ -13,10 +15,15 @@ from .forms import (
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from .models import Document
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
 import json
 from io import BytesIO
 import os
@@ -26,10 +33,8 @@ import zipfile
 @login_required(login_url='login')
 def admin_dashboard(request):
     if not request.user.is_superuser:
-        return redirect(
-            "userDashboard"
-        )  
-    documents = Document.objects.all()  # Retrieve all documents
+        return redirect("userDashboard")
+    documents = Document.objects.all()
     return render(request, "adminDashboard.html", {"documents": documents})
 
 
@@ -47,29 +52,23 @@ def add_file(request):
     return render(request, "add_file.html", {"form": form})
 
 
-
-
 def delete_file(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == "POST":
         document.delete()
-        return redirect("admin_dashboard") 
+        return redirect("admin_dashboard")
     return render(request, "delete_file.html", {"document": document})
 
 
 def edit_file(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
-
     if request.method == "POST":
         form = DocumentForm(request.POST, instance=document)
         if form.is_valid():
             form.save()
-            return redirect(
-                "admin_dashboard"
-            )
+            return redirect("admin_dashboard")
     else:
         form = DocumentForm(instance=document)
-
     return render(request, "edit_file.html", {"form": form, "document": document})
 
 
@@ -82,11 +81,8 @@ def email_form_view(request, document_id):
             subject = form.cleaned_data["subject"]
             message = form.cleaned_data["message"]
             file_url = request.build_absolute_uri(document.file.url)
-
             email_message = f"{message}\n\nYou can download the file here: {file_url}"
-
             send_mail(subject, email_message, settings.DEFAULT_FROM_EMAIL, [recipient])
-
             return redirect("userDashboard")
     else:
         form = EmailForm()
@@ -98,26 +94,21 @@ def download_multiple_files(request):
     if request.method == "POST":
         file_ids = request.POST.get("file_ids")
         file_ids = json.loads(file_ids)
-
         buffer = BytesIO()
         with zipfile.ZipFile(buffer, "w") as zip_file:
             for file_id in file_ids:
                 document = get_object_or_404(Document, pk=file_id)
                 file_path = document.file.path
                 zip_file.write(file_path, os.path.basename(file_path))
-
         buffer.seek(0)
-
         response = HttpResponse(buffer, content_type="application/zip")
         response["Content-Disposition"] = "attachment; filename=files.zip"
         return response
-
     return HttpResponse(status=405)
 
 
 def logout(request):
     auth.logout(request)
-
     return redirect("landing_page")
 
 
@@ -135,25 +126,49 @@ def login(request):
             messages.error(request, "Invalid email or password.")
     else:
         form = CustomAuthenticationForm()
-
     context = {"form": form}
-
     return render(request, "login_page.html", context)
 
 
 def signUp(request):
-    form = CustomUserCreationForm()
-
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
-
         if form.is_valid():
-            form.save()
-            return redirect("login")
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            activation_link = request.build_absolute_uri(
+                reverse('activate', args=[uid, token])
+            )
+            message = render_to_string('activation_email.html', {
+                'user': user,
+                'activation_link': activation_link,
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()
+            return redirect('confirmation_sent')
     else:
         form = CustomUserCreationForm()
-    context = {"form": form}
-    return render(request, "signUp_page.html", context)
+    return render(request, "signUp_page.html", {"form": form})
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('activation_complete')
+    else:
+        return render(request, 'activation_invalid.html')
 
 
 @login_required(login_url="login")
@@ -161,8 +176,8 @@ def userDashboard(request):
     query = request.GET.get("q")
     if query:
         documents = Document.objects.filter(
-            Q(title__icontains=query) | Q(description__icontains=query)
-        )
+            Q(title__icontains=query) | Q(description__icontains(query)
+        ))
     else:
         documents = Document.objects.all()
     print(documents)
