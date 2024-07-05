@@ -2,19 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login
 from django import forms
-# from django.contrib.auth.models import User
-from .models import CustomUser
-from django.contrib.auth import forms
-from django.contrib import messages
-from .forms import (
-    DocumentForm,
-    CustomUserCreationForm,
-    CustomAuthenticationForm,
-    EmailForm,
-)
+from .models import CustomUser, Document, DownloadLog, EmailLog
+from .forms import DocumentForm, CustomUserCreationForm, CustomAuthenticationForm, EmailForm
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
-from .models import Document
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.db.models import Q
@@ -28,6 +19,20 @@ import json
 from io import BytesIO
 import os
 import zipfile
+from django.contrib import messages
+import mimetypes
+
+
+
+def download_file_view(request, file_id):
+    document = get_object_or_404(Document, pk=file_id)
+    file_path = document.file.path
+    file_name = document.file.name.split('/')[-1]  # Extract filename from path
+
+    with open(file_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type=mimetypes.guess_type(file_path)[0])
+        response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+        return response
 
 
 @login_required(login_url='login')
@@ -35,7 +40,14 @@ def admin_dashboard(request):
     if not request.user.is_superuser:
         return redirect("userDashboard")
     documents = Document.objects.all()
-    return render(request, "adminDashboard.html", {"documents": documents})
+    download_logs = DownloadLog.objects.all()
+    email_logs = EmailLog.objects.all()
+    return render(request, "adminDashboard.html", {
+        "documents": documents,
+        "download_logs": download_logs,
+        "email_logs": email_logs,
+    })
+
 
 
 @login_required(login_url='login')
@@ -52,12 +64,14 @@ def add_file(request):
     return render(request, "add_file.html", {"form": form})
 
 
+
 def delete_file(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == "POST":
         document.delete()
         return redirect("admin_dashboard")
     return render(request, "delete_file.html", {"document": document})
+
 
 
 def edit_file(request, document_id):
@@ -72,6 +86,7 @@ def edit_file(request, document_id):
     return render(request, "edit_file.html", {"form": form, "document": document})
 
 
+
 def email_form_view(request, document_id):
     document = Document.objects.get(pk=document_id)
     if request.method == "POST":
@@ -83,10 +98,17 @@ def email_form_view(request, document_id):
             file_url = request.build_absolute_uri(document.file.url)
             email_message = f"{message}\n\nYou can download the file here: {file_url}"
             send_mail(subject, email_message, settings.DEFAULT_FROM_EMAIL, [recipient])
+            # Log the email
+            EmailLog.objects.create(
+                document=document,
+                recipient_email=recipient,
+                sent_at=timezone.now()
+            )
             return redirect("userDashboard")
     else:
         form = EmailForm()
     return render(request, "email_form.html", {"form": form, "document": document})
+
 
 
 @csrf_exempt
@@ -100,6 +122,13 @@ def download_multiple_files(request):
                 document = get_object_or_404(Document, pk=file_id)
                 file_path = document.file.path
                 zip_file.write(file_path, os.path.basename(file_path))
+                # Log the download
+                DownloadLog.objects.create(
+                    document=document,
+                    downloaded_at=timezone.now()
+                )
+                document.download_count += 1
+                document.save()
         buffer.seek(0)
         response = HttpResponse(buffer, content_type="application/zip")
         response["Content-Disposition"] = "attachment; filename=files.zip"
@@ -107,9 +136,11 @@ def download_multiple_files(request):
     return HttpResponse(status=405)
 
 
+
 def logout(request):
     auth.logout(request)
     return redirect("landing_page")
+
 
 
 def login(request):
@@ -128,6 +159,7 @@ def login(request):
         form = CustomAuthenticationForm()
     context = {"form": form}
     return render(request, "login_page.html", context)
+
 
 
 def signUp(request):
@@ -157,6 +189,7 @@ def signUp(request):
     return render(request, "signUp_page.html", {"form": form})
 
 
+
 def activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -171,6 +204,7 @@ def activate(request, uidb64, token):
         return render(request, 'activation_invalid.html')
 
 
+
 @login_required(login_url="login")
 def userDashboard(request):
     query = request.GET.get("q")
@@ -182,6 +216,7 @@ def userDashboard(request):
         documents = Document.objects.all()
     print(documents)
     return render(request, "userdashboard_page.html", {"documents": documents})
+
 
 
 def landing_page(request):

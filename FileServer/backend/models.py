@@ -1,13 +1,12 @@
 # models.py
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-
 
 class Document(models.Model):
     title = models.CharField(max_length=100)
@@ -19,3 +18,14 @@ class Document(models.Model):
 
     def __str__(self):
         return self.title
+
+class DownloadLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    downloaded_at = models.DateTimeField(auto_now_add=True)
+
+class EmailLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    recipient = models.EmailField()
+    sent_at = models.DateTimeField(auto_now_add=True)

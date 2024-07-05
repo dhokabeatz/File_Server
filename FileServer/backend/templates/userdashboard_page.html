@@ -28,7 +28,7 @@
           data-description="{{ document.description }}" data-file-url="{{ document.file.url }}">
           Open
         </button>
-        <a href="{{ document.file.url }}" class="btn btn-info download-btn" download>Download</a>
+        <a href="#" class="btn btn-info download-btn" onclick="downloadFile('{{ document.id }}')">Download</a>
         <button class="btn btn-warning email-btn" data-title="{{ document.title }}"
           data-file-url="{{ document.file.url }}" data-file-id="{{ document.id }}">
           Email
@@ -131,6 +131,30 @@
         alert("Please select at least one file to download.");
       }
     });
+
+    function downloadFile(fileId) {
+    // Make an AJAX request to your Django view
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/download/' + fileId + '/');
+    xhr.responseType = 'blob'; // Set the responseType to blob for binary data
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Create a temporary link element and trigger the download
+            var blob = new Blob([xhr.response], { type: xhr.getResponseHeader('Content-Type') });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = xhr.getResponseHeader('Content-Disposition').split('filename=')[1].trim();
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    };
+
+    xhr.send();
+}
 
     // Function to retrieve CSRF token from cookies
     function getCookie(name) {

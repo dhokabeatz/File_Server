@@ -55,7 +55,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     
-    'backend.middleware.NoCacheMiddleware',    # "backend.middleware.DisableClientSideCachingMiddleware",
+    'backend.middleware.NoCacheMiddleware',
 
 ]
 
@@ -148,26 +148,15 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 #EMAIL_USE_TLS = True  eapc svoc jpgs mnhc
 
-# # Static files (CSS, JavaScript, Images)
 
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / "backend/static",
-# ]
-
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "backend/static",
 ]
+STATIC_ROOT = BASE_DIR / 'static'
 
 
+# Media files (User uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-# urls.py (main project URL configuration)
-# from django.conf import settings
-# from django.conf.urls.static import static
-
-# urlpatterns = [
-#     # Other URL patterns
-# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
