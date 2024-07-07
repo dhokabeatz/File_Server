@@ -107,6 +107,7 @@ def edit_file(request, document_id):
 
 
 
+@login_required  # Enforce authentication
 def email_form_view(request, document_id):
     document = Document.objects.get(pk=document_id)
     if request.method == "POST":
@@ -118,10 +119,10 @@ def email_form_view(request, document_id):
             file_url = request.build_absolute_uri(document.file.url)
             email_message = f"{message}\n\nYou can download the file here: {file_url}"
             send_mail(subject, email_message, settings.DEFAULT_FROM_EMAIL, [recipient])
-            # Log the email
             EmailLog.objects.create(
+                user= request.user,
                 document=document,
-                recipient_email=recipient,
+                recipient=recipient,
                 sent_at=timezone.now()
             )
             return redirect("userDashboard")
