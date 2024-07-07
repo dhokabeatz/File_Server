@@ -1,6 +1,5 @@
+# urls.py
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from .views import (
     add_file,
     landing_page,
@@ -14,6 +13,7 @@ from .views import (
     edit_file,
     delete_file,
     activate,
+    download_file,  # Import the new view
 )
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
@@ -23,7 +23,7 @@ urlpatterns = [
     path("admin-dashboard/", admin_dashboard, name="admin_dashboard"),
     path("edit-file/<int:document_id>/", edit_file, name="edit_file"),
     path("delete-file/<int:document_id>/", delete_file, name="delete_file"),
-    path("download-multiple/", download_multiple_files, name="download_multiple_files"),
+    path("download-multiple/", download_multiple_files, name="download_multiple"),
     path("email/<int:document_id>/", email_form_view, name="email_form"),
     path("", landing_page, name="landing_page"),
     path("login/", login, name="login"),
@@ -38,8 +38,5 @@ urlpatterns = [
     path("reset_password_complete/", auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"), name="reset_password_complete"),
     path("logout/", logout, name="logout"),
     path("user-dashboard/", userDashboard, name="userDashboard"),
+    path("download-file/<int:document_id>/", download_file, name="download_file"),  # New URL pattern
 ]
-
-# Serve static and media files during development
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -24,13 +24,18 @@
         <p class="file-description">{{ document.description }}</p>
       </div>
       <div class="file-actions">
-        <button class="btn btn-primary open-btn" data-title="{{ document.title }}"
-          data-description="{{ document.description }}" data-file-url="{{ document.file.url }}">
+        <button class="btn btn-primary open-btn"
+          data-title="{{ document.title }}"
+          data-description="{{ document.description }}"
+          data-file-url="{{ document.file.url }}"
+          data-document-id="{{ document.id }}">
           Open
         </button>
-        <a href="#" class="btn btn-info download-btn" onclick="downloadFile('{{ document.id }}')">Download</a>
-        <button class="btn btn-warning email-btn" data-title="{{ document.title }}"
-          data-file-url="{{ document.file.url }}" data-file-id="{{ document.id }}">
+        <a href="{% url 'download_file' document.id %}" class="btn btn-primary">Download</a> <!-- Download link within the loop -->
+        <button class="btn btn-warning email-btn" 
+          data-title="{{ document.title }}"
+          data-file-url="{{ document.file.url }}" 
+          data-document-id="{{ document.id }}">
           Email
         </button>
       </div>
@@ -45,8 +50,8 @@
     <span class="close">&times;</span>
     <h3 id="modal-title"></h3>
     <p id="modal-description"></p>
-    <a id="modal-download" href="" class="btn btn-info" download>Download</a>
-    <button id="modal-email" class="btn btn-warning">Email</button>
+    <a id="modal-download" href="#" class="btn btn-primary">Download</a> <!-- Updated link -->
+    <a id="modal-email" href="#" class="btn btn-warning">Email</a> <!-- Updated link -->
   </div>
 </div>
 
@@ -65,11 +70,12 @@
         const title = this.getAttribute("data-title");
         const description = this.getAttribute("data-description");
         const fileUrl = this.getAttribute("data-file-url");
+        const documentId = this.getAttribute("data-document-id");
 
         modalTitle.textContent = title;
         modalDescription.textContent = description;
-        modalDownload.href = fileUrl;
-        modalEmail.setAttribute("data-file-url", fileUrl);
+        modalDownload.href = `/download-file/${documentId}/`;
+        modalEmail.href = `/email/${documentId}/`;
 
         modal.style.display = "block";
       });
@@ -90,8 +96,8 @@
     // Email button click event
     document.querySelectorAll(".email-btn").forEach((button) => {
       button.addEventListener("click", function () {
-        const fileId = this.getAttribute("data-file-id");
-        window.location.href = `/email/${fileId}/`; // Adjust the URL as needed
+        const documentId = this.getAttribute("data-document-id");
+        window.location.href = `/email/${documentId}/`;
       });
     });
 
@@ -132,36 +138,12 @@
       }
     });
 
-    function downloadFile(fileId) {
-    // Make an AJAX request to your Django view
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/download/' + fileId + '/');
-    xhr.responseType = 'blob'; // Set the responseType to blob for binary data
-
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Create a temporary link element and trigger the download
-            var blob = new Blob([xhr.response], { type: xhr.getResponseHeader('Content-Type') });
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = xhr.getResponseHeader('Content-Disposition').split('filename=')[1].trim();
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-    };
-
-    xhr.send();
-}
-
     // Function to retrieve CSRF token from cookies
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== "") {
         const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
+        for (let i = 0; cookies.length > i; i++) {
           const cookie = cookies[i].trim();
           if (cookie.substring(0, name.length + 1) === name + "=") {
             cookieValue = decodeURIComponent(
@@ -177,3 +159,5 @@
 </script>
 
 {% endblock %}
+
+#add download to download buttons

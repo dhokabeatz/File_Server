@@ -21,13 +21,33 @@ import os
 import zipfile
 from django.contrib import messages
 import mimetypes
+from django.utils import timezone
 
 
+@login_required
+def download_file(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    # Log the download
+    DownloadLog.objects.create(user=request.user, document=document)
+    # Increment the download count
+    document.download_count += 1
+    document.save()
+    # Redirect to the file for download
+    file_url = document.file.url
+    return redirect(file_url)
 
+@login_required
 def download_file_view(request, file_id):
     document = get_object_or_404(Document, pk=file_id)
     file_path = document.file.path
     file_name = document.file.name.split('/')[-1]  # Extract filename from path
+
+    # Increment download count and log the download
+    document.download_count += 1
+    document.save()
+
+    # Log the download
+    DownloadLog.objects.create(user=request.user, document=document, downloaded_at=timezone.now())
 
     with open(file_path, 'rb') as f:
         response = HttpResponse(f.read(), content_type=mimetypes.guess_type(file_path)[0])
