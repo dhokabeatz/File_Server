@@ -24,18 +24,15 @@
         <p class="file-description">{{ document.description }}</p>
       </div>
       <div class="file-actions">
-        <button class="btn btn-primary open-btn"
-          data-title="{{ document.title }}"
-          data-description="{{ document.description }}"
-          data-file-url="{{ document.file.url }}"
+        <button class="btn btn-primary open-btn" data-title="{{ document.title }}"
+          data-description="{{ document.description }}" data-file-url="{{ document.file.url }}"
           data-document-id="{{ document.id }}">
           Open
         </button>
-        <a href="{% url 'download_file' document.id %}" class="btn btn-primary">Download</a> <!-- Download link within the loop -->
-        <button class="btn btn-warning email-btn" 
-          data-title="{{ document.title }}"
-          data-file-url="{{ document.file.url }}" 
-          data-document-id="{{ document.id }}">
+        <a href="{% url 'download_file' document.id %}" class="btn btn-primary">Download</a>
+        <!-- Download link within the loop -->
+        <button class="btn btn-warning email-btn" data-title="{{ document.title }}"
+          data-file-url="{{ document.file.url }}" data-document-id="{{ document.id }}">
           Email
         </button>
       </div>

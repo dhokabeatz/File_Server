@@ -28,15 +28,51 @@ urlpatterns = [
     path("", landing_page, name="landing_page"),
     path("login/", login, name="login"),
     path("signup/", signUp, name="signUp"),
-    path('activate/<uidb64>/<token>/', activate, name='activate'),
-    path('confirmation-sent/', TemplateView.as_view(template_name='confirmation_sent.html'), name='confirmation_sent'),
-    path('activation-complete/', TemplateView.as_view(template_name='activation_complete.html'), name='activation_complete'),
-    path('activation-invalid/', TemplateView.as_view(template_name='activation_invalid.html'), name='activation_invalid'),
-    path("reset-password/", auth_views.PasswordResetView.as_view(template_name="reset_password.html"), name="reset_password"),
-    path("reset-password-sent/", auth_views.PasswordResetDoneView.as_view(template_name="password_reset_sent.html"), name="password_reset_done"),
-    path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"), name="password_reset_confirm"),
-    path("reset_password_complete/", auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"), name="reset_password_complete"),
+    path("activate/<uidb64>/<token>/", activate, name="activate"),
+    path(
+        "confirmation-sent/",
+        TemplateView.as_view(template_name="confirmation_sent.html"),
+        name="confirmation_sent",
+    ),
+    path(
+        "activation-complete/",
+        TemplateView.as_view(template_name="activation_complete.html"),
+        name="activation_complete",
+    ),
+    path(
+        "activation-invalid/",
+        TemplateView.as_view(template_name="activation_invalid.html"),
+        name="activation_invalid",
+    ),
+    path(
+        "reset-password/",
+        auth_views.PasswordResetView.as_view(template_name="reset_password.html"),
+        name="reset_password",
+    ),
+    path(
+        "reset-password-sent/",
+        auth_views.PasswordResetDoneView.as_view(
+            template_name="password_reset_sent.html"
+        ),
+        name="password_reset_done",
+    ),
+    path(
+        "reset/<uidb64>/<token>/",
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name="password_reset_form.html"
+        ),
+        name="password_reset_confirm",
+    ),
+    path(
+        "reset_password_complete/",
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name="password_reset_done.html"
+        ),
+        name="reset_password_complete",
+    ),
     path("logout/", logout, name="logout"),
     path("user-dashboard/", userDashboard, name="userDashboard"),
-    path("download-file/<int:document_id>/", download_file, name="download_file"),  # New URL pattern
+    path(
+        "download-file/<int:document_id>/", download_file, name="download_file"
+    ),  # New URL pattern
 ]

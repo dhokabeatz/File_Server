@@ -7,8 +7,13 @@ from .forms import CustomUserCreationForm
 
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'uploaded_at', 'uploaded_by', 'download_count')
-
+    list_display = (
+        "title",
+        "description",
+        "uploaded_at",
+        "uploaded_by",
+        "download_count",
+    )
 
 
 class CustomUserAdmin(UserAdmin):
@@ -16,24 +21,49 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserCreationForm
     model = CustomUser
 
-    list_display = ("username", "email", "is_staff", "is_active",)
-    list_filter = ("is_staff", "is_active",)
+    list_display = (
+        "username",
+        "email",
+        "is_staff",
+        "is_active",
+    )
+    list_filter = (
+        "is_staff",
+        "is_active",
+    )
     fieldsets = (
         (None, {"fields": ("username", "email", "password")}),
-        ("Permissions", {"fields": ("is_staff", "is_active",)}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_staff",
+                    "is_active",
+                )
+            },
+        ),
     )
     add_fieldsets = (
-        (None, {
-            "classes": ("wide",),
-            "fields": ("username", "email", "password1", "password2", "is_staff", "is_active",)
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "email",
+                    "password1",
+                    "password2",
+                    "is_staff",
+                    "is_active",
+                ),
+            },
+        ),
     )
     search_fields = ("email",)
     ordering = ("email",)
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(DownloadLog)
 admin.site.register(EmailLog)
-
-
