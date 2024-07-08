@@ -69,10 +69,21 @@ TEMPLATES = [
 WSGI_APPLICATION = "FileServer.wsgi.application"
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME":"railway",
+        "USER":"postgres",
+        "PASSWORD":"yhcJmOROFPAakglFFvEYEmWUMMgePvol",
+        "HOST":"viaduct.proxy.rlwy.net",
+        "PORT":"35878",
     }
 }
 
@@ -105,11 +116,6 @@ USE_TZ = True
 
 
 
-STATIC_URL = "static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [BASE_DIR / "backend/static",]
-STATIC_ROOT = BASE_DIR / "static"
-
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -125,8 +131,14 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 # EMAIL_USE_TLS = True  eapc svoc jpgs mnhc
 
 
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
-# Media files (User uploaded files)
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
