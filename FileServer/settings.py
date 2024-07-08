@@ -21,12 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-q*e!8%q2cd$x=rk=t4!=fc1m=w%zwv1-0%gb*=kd!mk18ix=9("
+# SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
-ALLOWED_HOSTS = ['*']
+
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
