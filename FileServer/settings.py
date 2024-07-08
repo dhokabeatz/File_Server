@@ -86,9 +86,18 @@ WSGI_APPLICATION = "FileServer.wsgi.application"
 #         'PORT': os.getenv('DB_PORT'),
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
+}
 
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+# Override with environment variable if provided
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url)
+
 #postgresql://dhokabeatz:OIEJsYvipOWnwbSfiFefudiyVGwEmtEX@dpg-cq62jjcs1f4s73drer80-a.oregon-postgres.render.com/fileserver_zuhf
 
 AUTH_PASSWORD_VALIDATORS = [
