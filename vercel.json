@@ -6,7 +6,7 @@
     }],
     "routes": [
         {
-            "src": "FileServer/(.*)",
+            "src": "/(.*)",
             "dest": "FileServer/wsgi.py"
         }
     ]
