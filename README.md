@@ -25,6 +25,62 @@ File Server is a web application designed to facilitate the distribution and man
 - CSS
 - Bootstrap
 
+
+
+## Database Schema
+
+### CustomUser
+| Field        | Type                | Null | Key | Default | Extra          |
+|--------------|---------------------|------|-----|---------|----------------|
+| id           | INTEGER             | NO   | PK  | NULL    | auto-increment |
+| password     | VARCHAR(128)        | NO   |     | NULL    |                |
+| last_login   | DATETIME            | YES  |     | NULL    |                |
+| is_superuser | BOOLEAN             | NO   |     | NULL    |                |
+| username     | VARCHAR(150)        | NO   | UN  | NULL    |                |
+| first_name   | VARCHAR(30)         | NO   |     | NULL    |                |
+| last_name    | VARCHAR(150)        | NO   |     | NULL    |                |
+| email        | VARCHAR(254)        | NO   | UN  | NULL    |                |
+| is_staff     | BOOLEAN             | NO   |     | NULL    |                |
+| is_active    | BOOLEAN             | NO   |     | NULL    |                |
+| date_joined  | DATETIME            | NO   |     | NULL    |                |
+
+### Document
+| Field         | Type                | Null | Key | Default | Extra          |
+|---------------|---------------------|------|-----|---------|----------------|
+| id            | INTEGER             | NO   | PK  | NULL    | auto-increment |
+| title         | VARCHAR(100)        | NO   |     | NULL    |                |
+| description   | TEXT                | NO   |     | NULL    |                |
+| file          | VARCHAR(100)        | NO   |     | NULL    |                |
+| uploaded_at   | DATETIME            | NO   |     | NULL    | auto now add   |
+| uploaded_by   | INTEGER             | NO   | FK  | NULL    |                |
+| download_count| INTEGER             | NO   |     | 0       |                |
+| email_count   | INTEGER             | NO   |     | 0       |                |
+
+### DownloadLog
+| Field        | Type                | Null | Key | Default | Extra          |
+|--------------|---------------------|------|-----|---------|----------------|
+| id           | INTEGER             | NO   | PK  | NULL    | auto-increment |
+| user         | INTEGER             | NO   | FK  | NULL    |                |
+| document     | INTEGER             | NO   | FK  | NULL    |                |
+| downloaded_at| DATETIME            | NO   |     | NULL    | auto now add   |
+
+### EmailLog
+| Field        | Type                | Null | Key | Default | Extra          |
+|--------------|---------------------|------|-----|---------|----------------|
+| id           | INTEGER             | NO   | PK  | NULL    | auto-increment |
+| user         | INTEGER             | NO   | FK  | NULL    |                |
+| document     | INTEGER             | NO   | FK  | NULL    |                |
+| recipient    | VARCHAR(254)        | NO   |     | NULL    |                |
+| sent_at      | DATETIME            | NO   |     | NULL    | auto now add   |
+
+### Foreign Keys
+- `Document.uploaded_by` references `CustomUser.id`
+- `DownloadLog.user` references `CustomUser.id`
+- `DownloadLog.document` references `Document.id`
+- `EmailLog.user` references `CustomUser.id`
+- `EmailLog.document` references `Document.id`
+
+
 ## Installation
 
 1. **Clone the repository:**
