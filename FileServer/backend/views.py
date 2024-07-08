@@ -113,7 +113,6 @@ def edit_file(request, document_id):
         form = DocumentForm(instance=document)
     return render(request, "edit_file.html", {"form": form, "document": document})
 
-
 @login_required
 def email_form_view(request, document_id):
     document = Document.objects.get(pk=document_id)
@@ -132,6 +131,8 @@ def email_form_view(request, document_id):
                 recipient=recipient,
                 sent_at=timezone.now(),
             )
+            document.email_count += 1  
+            document.save()
             return redirect("userDashboard")
     else:
         form = EmailForm()

@@ -16,6 +16,7 @@
             <th>Uploaded By</th>
             <th>Uploaded At</th>
             <th>Download Count</th>
+            <th>Email Count</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -28,6 +29,7 @@
             <td>{{ document.uploaded_by.username }}</td>
             <td>{{ document.uploaded_at }}</td>
             <td>{{ document.download_count }}</td>
+            <td>{{ document.email_count }}</td>
             <td>
                 <button type="button" class="btn btn-primary" data-toggle="modal"
                     data-target="#fileModal{{ document.id }}">

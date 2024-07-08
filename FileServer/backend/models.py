@@ -15,6 +15,7 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     download_count = models.PositiveIntegerField(default=0)
+    email_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
