@@ -9,6 +9,8 @@ from .forms import (
     CustomAuthenticationForm,
     EmailForm,
 )
+from django.utils.html import strip_tags
+
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMessage
@@ -32,12 +34,9 @@ from django.utils import timezone
 @login_required
 def download_file(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
-    # Log the download
     DownloadLog.objects.create(user=request.user, document=document)
-    # Increment the download count
     document.download_count += 1
     document.save()
-    # Redirect to the file for download
     file_url = document.file.url
     return redirect(file_url)
 
@@ -46,13 +45,11 @@ def download_file(request, document_id):
 def download_file_view(request, file_id):
     document = get_object_or_404(Document, pk=file_id)
     file_path = document.file.path
-    file_name = document.file.name.split("/")[-1]  # Extract filename from path
+    file_name = document.file.name.split("/")[-1]
 
-    # Increment download count and log the download
     document.download_count += 1
     document.save()
 
-    # Log the download
     DownloadLog.objects.create(
         user=request.user, document=document, downloaded_at=timezone.now()
     )
@@ -117,7 +114,7 @@ def edit_file(request, document_id):
     return render(request, "edit_file.html", {"form": form, "document": document})
 
 
-@login_required  # Enforce authentication
+@login_required
 def email_form_view(request, document_id):
     document = Document.objects.get(pk=document_id)
     if request.method == "POST":
@@ -152,9 +149,9 @@ def download_multiple_files(request):
                 document = get_object_or_404(Document, pk=file_id)
                 file_path = document.file.path
                 zip_file.write(file_path, os.path.basename(file_path))
-                # Log the download
                 DownloadLog.objects.create(
-                    document=document, downloaded_at=timezone.now()
+                    document=document, downloaded_at=timezone.now(), user=request.user
+
                 )
                 document.download_count += 1
                 document.save()
@@ -209,8 +206,9 @@ def signUp(request):
                     "activation_link": activation_link,
                 },
             )
+            text_content = strip_tags(message)
             to_email = form.cleaned_data.get("email")
-            email = EmailMessage(mail_subject, message, to=[to_email])
+            email = EmailMessage(mail_subject, text_content, to=[to_email])
             email.send()
             return redirect("confirmation_sent")
     else:

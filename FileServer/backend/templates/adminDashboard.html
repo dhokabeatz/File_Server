@@ -1,4 +1,3 @@
-<!-- admin_dashboard.html -->
 {% extends 'base.html' %}
 
 {% block title %}File Server - Admin Dashboard{% endblock %}
@@ -6,10 +5,8 @@
 
 <h1>Admin Dashboard</h1>
 
-<!-- Add File Button -->
 <a href="{% url 'add_file' %}" class="btn btn-success mb-3">Add File</a>
 
-<!-- Table of Documents -->
 <table class="table table-striped">
     <thead>
         <tr>
@@ -32,13 +29,11 @@
             <td>{{ document.uploaded_at }}</td>
             <td>{{ document.download_count }}</td>
             <td>
-                <!-- Open button to trigger modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal"
                     data-target="#fileModal{{ document.id }}">
                     Open
                 </button>
 
-                <!-- Modal -->
                 <div class="modal fade" id="fileModal{{ document.id }}" tabindex="-1" role="dialog"
                     aria-labelledby="fileModalLabel{{ document.id }}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -56,7 +51,6 @@
                                 <a href="{% url 'edit_file' document.id %}" class="btn btn-secondary">Edit</a>
                                 <a href="{% url 'delete_file' document.id %}" class="btn btn-danger">Delete</a>
                                 <a href="{% url 'download_file' document.id %}" class="btn btn-primary">Download</a>
-                                <!-- Updated link -->
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
@@ -68,14 +62,12 @@
     </tbody>
 </table>
 
-<!-- Navigation Buttons -->
 <div class="mb-3">
     <a href="{% url 'userDashboard' %}" class="btn btn-secondary">User Dashboard</a>
     <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
     <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
 </div>
 
-<!-- Include Bootstrap JS at the end of the body -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

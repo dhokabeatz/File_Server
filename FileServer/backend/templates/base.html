@@ -3,13 +3,15 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}File Server{% endblock %}</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css">
     <link rel="stylesheet" href="{% static 'css/login_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <link rel="stylesheet" href="{% static 'css/password_reset_page.css' %}">
@@ -32,100 +34,100 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         {% if request.path == '/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'signUp' %}">Register</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signUp' %}">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% elif request.path == '/login/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'signUp' %}">Register</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signUp' %}">Register</a>
+                        </li>
                         {% elif request.path == '/signup/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% elif request.path == '/user-dashboard/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'userDashboard' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userDashboard' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
                         {% elif request.path == '/email/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'userDashboard' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userDashboard' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
                         {% elif request.path == '/reset-password/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% elif request.path == '/reset-password-sent/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% elif request.path == '/reset_password_complete/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% elif request.path == '/reset/<uidb64>/<token>/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
-                        {% elif request.path == '/reset_password_complete/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            </li>
-                        {% elif request.path == '/admin-dashboard/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
-                        {% elif 'edit-file' in request.path %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
-                        {% elif request.path == '/add-file/' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            </li>
-                        {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                </li>
+                                {% elif request.path == '/reset_password_complete/' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'landing_page' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                </li>
+                                {% elif request.path == '/admin-dashboard/' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                </li>
+                                {% elif 'edit-file' in request.path %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                </li>
+                                {% elif request.path == '/add-file/' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                </li>
+                                {% endif %}
                     </ul>
                 </div>
             </div>
@@ -136,5 +138,13 @@
         {% block content %}
         {% endblock %}
     </div>
+    <script src="{% static 'js/userdashboard.js' %}"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 </body>
+
 </html>
