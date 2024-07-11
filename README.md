@@ -80,6 +80,7 @@ File Server is a web application designed to facilitate the distribution and man
 - `EmailLog.user` references `CustomUser.id`
 - `EmailLog.document` references `Document.id`
 
+![Database Diagram](https://github.com/dhokabeatz/File_Server/blob/master/Untitled.png?raw=true)
 
 ## Installation
 
