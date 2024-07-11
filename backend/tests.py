@@ -6,23 +6,10 @@ from backend.forms import CustomUserCreationForm
 from django.test import SimpleTestCase
 from django.utils.cache import add_never_cache_headers
 from django.http import HttpResponse
-from backend.views import (
-    add_file,
-    admin_dashboard,
-    edit_file,
-    delete_file,
-    download_multiple_files,
-    email_form_view,
-    landing_page,
-    login,
-    signUp,
-    logout,
-    userDashboard,
-)
+from backend.views import *
 from django.contrib.auth.models import AnonymousUser
 from backend.middleware import NoCacheMiddleware
-from backend.views import userDashboard
-
+from backend.views import *
 
 class AuthTests(TestCase):
     def setUp(self):

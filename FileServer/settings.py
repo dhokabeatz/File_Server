@@ -17,11 +17,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=config('DATABASE_URL')
-#     )
-# }
+
 
 
 INSTALLED_APPS = [
@@ -70,13 +66,6 @@ WSGI_APPLICATION = "FileServer.wsgi.application"
 
 
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
-# DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': os.getenv('DB_NAME'),
@@ -93,12 +82,10 @@ DATABASES = {
     }
 }
 
-# Override with environment variable if provided
 database_url = os.getenv('DATABASE_URL')
 if database_url:
     DATABASES['default'] = dj_database_url.parse(database_url)
 
-#postgresql://dhokabeatz:OIEJsYvipOWnwbSfiFefudiyVGwEmtEX@dpg-cq62jjcs1f4s73drer80-a.oregon-postgres.render.com/fileserver_zuhf
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -139,8 +126,6 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
-# EMAIL_USE_TLS = True  eapc svoc jpgs mnhc
-
 
 STATIC_URL = '/static/'
 
@@ -150,6 +135,5 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

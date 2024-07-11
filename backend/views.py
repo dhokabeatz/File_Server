@@ -3,14 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login
 from django import forms
 from .models import CustomUser, Document, DownloadLog, EmailLog
-from .forms import (
-    DocumentForm,
-    CustomUserCreationForm,
-    CustomAuthenticationForm,
-    EmailForm,
-)
+from .forms import *
 from django.utils.html import strip_tags
-
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMessage
@@ -29,6 +23,7 @@ import zipfile
 from django.contrib import messages
 import mimetypes
 from django.utils import timezone
+
 
 
 @login_required

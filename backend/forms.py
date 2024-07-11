@@ -1,12 +1,6 @@
 from django import forms
 
-# from django.contrib.auth.models import User
-from django.contrib.auth.forms import (
-    UserCreationForm,
-    AuthenticationForm,
-    PasswordResetForm,
-    SetPasswordForm,
-)
+from django.contrib.auth.forms import *
 from django.core.exceptions import ValidationError
 from django.forms.fields import EmailField
 from django.forms.forms import Form
@@ -14,7 +8,6 @@ from django.contrib.auth import authenticate
 from .models import Document, CustomUser
 
 
-# User Registration Form
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
@@ -25,6 +18,7 @@ class CustomUserCreationForm(UserCreationForm):
         if CustomUser.objects.filter(email=email).exists():
             raise ValidationError("Email already exists")
         return email
+
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -56,7 +50,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         return self.cleaned_data
 
 
-# Passowrd Reset Form - Send email for link
+
 class CustomPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(
         max_length=254,
@@ -66,7 +60,7 @@ class CustomPasswordResetForm(PasswordResetForm):
     )
 
 
-# Password Reset Form- For new password
+
 class CustomSetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
         label="New password",
