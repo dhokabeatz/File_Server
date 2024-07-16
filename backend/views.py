@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login
 from django import forms
-from .models import CustomUser, Document, DownloadLog, EmailLog
+from .models import *
 from .forms import *
 from django.utils.html import strip_tags
 from django.contrib.auth.models import auth
@@ -235,7 +235,7 @@ def userDashboard(request):
         )
     else:
         documents = Document.objects.all()
-    print(documents)
+    # print(documents)
     return render(request, "userdashboard_page.html", {"documents": documents})
 
 

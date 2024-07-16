@@ -30,7 +30,7 @@
           Open
         </button>
         <a href="{% url 'download_file' document.id %}" class="btn btn-primary" download>Download</a>
-        <!-- Download link within the loop -->
+        
         <button class="btn btn-warning email-btn" data-title="{{ document.title }}"
           data-file-url="{{ document.file.url }}" data-document-id="{{ document.id }}">
           Email
@@ -41,14 +41,13 @@
   </div>
 </div>
 
-<!-- Modal Structure -->
 <div id="fileModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <h3 id="modal-title"></h3>
     <p id="modal-description"></p>
-    <a id="modal-download" href="#" class="btn btn-primary" download>Download</a> <!-- Updated link -->
-    <a id="modal-email" href="#" class="btn btn-warning">Email</a> <!-- Updated link -->
+    <a id="modal-download" href="#" class="btn btn-primary" download>Download</a> 
+    <a id="modal-email" href="#" class="btn btn-warning">Email</a>
   </div>
 </div>
 <script>
@@ -60,7 +59,7 @@
     const modalEmail = document.getElementById("modal-email");
     const span = document.getElementsByClassName("close")[0];
 
-    // Open button click event
+    
     document.querySelectorAll(".open-btn").forEach((button) => {
       button.addEventListener("click", function () {
         const title = this.getAttribute("data-title");
@@ -77,19 +76,19 @@
       });
     });
 
-    // Close button event
+    
     span.onclick = function () {
       modal.style.display = "none";
     };
 
-    // Click outside of modal to close it
+    
     window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
     };
 
-    // Email button click event
+    
     document.querySelectorAll(".email-btn").forEach((button) => {
       button.addEventListener("click", function () {
         const documentId = this.getAttribute("data-document-id");
@@ -97,7 +96,7 @@
       });
     });
 
-    // Multiple download button click event
+    
     const downloadButton = document.getElementById("download-selected");
     downloadButton.addEventListener("click", function () {
       const selectedFiles = document.querySelectorAll(
@@ -134,7 +133,7 @@
       }
     });
 
-    // Function to retrieve CSRF token from cookies
+    
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== "") {

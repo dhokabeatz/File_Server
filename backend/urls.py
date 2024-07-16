@@ -1,20 +1,5 @@
-# urls.py
 from django.urls import path
-from .views import (
-    add_file,
-    landing_page,
-    login,
-    signUp,
-    userDashboard,
-    logout,
-    email_form_view,
-    download_multiple_files,
-    admin_dashboard,
-    edit_file,
-    delete_file,
-    activate,
-    download_file,  # Import the new view
-)
+from .views import *
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
@@ -69,5 +54,5 @@ urlpatterns = [
     path("user-dashboard/", userDashboard, name="userDashboard"),
     path(
         "download-file/<int:document_id>/", download_file, name="download_file"
-    ),  # New URL pattern
+    ),  
 ]

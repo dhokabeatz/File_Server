@@ -130,7 +130,7 @@ class CustomUserCreationFormTest(TestCase):
             }
         )
         if not form.is_valid():
-            print(form.errors)  # Debugging: print form errors
+            print(form.errors)  
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
@@ -166,7 +166,6 @@ class CustomUserCreationFormTest(TestCase):
 class ViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Set up non-modified objects used by all test methods
         cls.admin_user = get_user_model().objects.create_superuser(
             username="adminuser", email="admin@example.com", password="adminpassword123"
         )
@@ -184,52 +183,51 @@ class ViewTests(TestCase):
         self.client = Client()
 
     def test_admin_dashboard_template(self):
-        self.client.force_login(self.admin_user)  # Log in as admin user
+        self.client.force_login(self.admin_user)  
         url = reverse("admin_dashboard")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        print(response.templates)  # Debug: Print the templates used
+        print(response.templates)  
         self.assertTemplateUsed(response, "adminDashboard.html")
 
     def test_add_file_view(self):
-        self.client.force_login(self.admin_user)  # Ensure admin is logged in
+        self.client.force_login(self.admin_user)  
         url = reverse("add_file")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "add_file.html")
 
     def test_delete_file_view(self):
-        self.client.force_login(self.admin_user)  # Ensure admin is logged in
+        self.client.force_login(self.admin_user)  
         url = reverse("delete_file", args=[self.document.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "delete_file.html")
 
     def test_edit_file_view(self):
-        self.client.force_login(self.admin_user)  # Ensure admin is logged in
+        self.client.force_login(self.admin_user)  
         url = reverse("edit_file", args=[self.document.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "edit_file.html")
 
     def test_email_form_view(self):
-        self.client.force_login(self.user)  # Log in as regular user for this test
+        self.client.force_login(self.user)  
         url = reverse("email_form", args=[self.document.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "email_form.html")
 
     def test_download_multiple_files_view(self):
-        self.client.force_login(self.user)  # Log in as regular user for this test
+        self.client.force_login(self.user)  
         url = reverse("download_multiple")
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 405)  # POST method not allowed
+        self.assertEqual(response.status_code, 405)  
 
 
 class DocumentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Set up non-modified objects used by all test methods
         user = get_user_model().objects.create_user(
             username="testuser", email="test@example.com", password="password123"
         )
@@ -250,7 +248,6 @@ class DocumentModelTest(TestCase):
         expected_description = f"{document.description}"
         self.assertEqual(expected_description, "This is a test document")
 
-    # Add more tests as needed for other fields and methods
 
     def test_document_str_method(self):
         document = Document.objects.get(id=1)
